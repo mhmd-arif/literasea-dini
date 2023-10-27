@@ -8,7 +8,7 @@ from django.urls import reverse
 from authentication.models import UserProfile
 
 def show_tracked(request):
-    tracked = request.user.userprofile.tracked_books.all()
+    tracked = request.user.userprofile.tracked_books.all().order_by('-id')
 
     context = {
         "tracked": tracked,
@@ -27,12 +27,11 @@ def add_tracked(request):
             user_profile, created = UserProfile.objects.get_or_create(user=request.user)
             user_profile.tracked_books.add(new_tracker)
 
-            owned = request.user.userprofile.owned_books.all()
-            context = {'form': form, 'owned': owned}
+            # owned = request.user.userprofile.owned_books.all()
+            # context = {'form': form, 'owned': owned}
 
-            # return redirect('show_tracked.html')
-
-            return render(request, "add_tracked.html", context)
+            # return render(request, "add_tracked.html", context)
+            return HttpResponseRedirect(reverse('tracker:show_tracked'))
 
     else:
         form = addTrackerForm()
